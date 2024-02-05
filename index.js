@@ -24,8 +24,8 @@ app.use('/api/auth', authRoute)
 async function start(){
     try{
         await mongoose.connect(`mongodb+srv://${DB_USER}:${DB_PASSWORD}@datingapp.baurm0d.mongodb.net/${DB_NAME}?retryWrites=true&w=majority`)
-
-        app.listen(PORT,()=>console.log(`server started on port: ${PORT}`))
+        
+        app.listen(PORT, ()=>console.log(`server started on port: ${PORT}`))
     }catch(error){
         console.log(error);
     }
