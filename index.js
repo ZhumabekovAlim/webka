@@ -4,6 +4,7 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 import cors from "cors";
 import { Server } from "socket.io";
+import jwt from "jsonwebtoken"
 
 import authRoute from './routes/auth.js';
 
@@ -30,14 +31,38 @@ const io = new Server(server);
 app.get('/', (req, res) => {
     res.sendFile('C:/xampp/htdocs/Webka/server/index.html');
 });
+app.get('/register', (req, res) => {
+    res.sendFile('C:/xampp/htdocs/Webka/server/register.html');
+});
+
+app.get('/login', (req, res) => {
+    res.sendFile('C:/xampp/htdocs/Webka/server/login.html');
+});
+
+function getUserFromToken(token) {
+    const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
+    return decodedToken.user;
+}
 
 io.on('connection', (socket) => {
-    console.log('a user connected');
-    socket.on('disconnect', () => {
-      console.log('user disconnected');
-    });
-  });
+    socket.on('chat message', (data) => {
+        try {
+            const userToken = data.token;
+            const user = getUserFromToken(userToken);
+            console.log(userToken.id);
 
+            if (user && user.username) {
+                io.emit('chat message', { text: data.text, user: user.username });
+            } else {
+                console.error('Invalid user object:', user);
+            }
+        } catch (error) {
+            console.error('Error decoding token:', error);
+        }
+    });
+});
+
+  
 async function start() {
     try {
         await mongoose.connect(`mongodb+srv://${DB_USER}:${DB_PASSWORD}@datingapp.baurm0d.mongodb.net/${DB_NAME}?retryWrites=true&w=majority`);

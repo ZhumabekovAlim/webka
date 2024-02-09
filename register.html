@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration Page</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        form { max-width: 300px; margin: auto; }
+        input { width: 100%; padding: 8px; margin: 5px 0; }
+        button { background-color: #4CAF50; color: white; padding: 10px 15px; margin: 8px 0; border: none; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+    <form id="registrationForm">
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required>
+
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required>
+
+        <button type="button" onclick="register()">Register</button>
+    </form>
+
+    <script>
+        async function register() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            try {
+                const response = await fetch('http://localhost:3002/api/auth/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ username, password }),
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    alert(data.message);
+                    window.location.href = 'login';
+                } else {
+                    alert(data.message);
+                }
+            } catch (error) {
+                console.error('Error during registration:', error.message);
+            }
+        }
+    </script>
+
+</body>
+</html>
