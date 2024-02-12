@@ -6,8 +6,20 @@
     export const register = async (req, res) => {
         try {
             const { username, password } = req.body
+            if (typeof username != "string" || typeof password != "string"){
+                res.send("Invalid parameters!");
+                res.end();
+                return;
+            }
 
-            const isUsed = await User.findOne({ username })
+            const isUsed = await User.findOne({ username }).toArray((err, documents) => {
+                if (err) {
+                  console.error('Error finding documents:', err);
+                } else {
+                  console.log('Documents found:', documents);
+                }
+              });
+            
 
             if(isUsed) {
                 return res.json({
@@ -31,7 +43,12 @@
                 { expiresIn: '30d' },
             )
 
-            await newUser.save()
+            try {
+                await newUser.save();
+                console.log('User saved successfully:', newUser);
+            } catch (error) {
+                console.error('Error saving user:', error);
+            }
 
             res.json({
                 token,
@@ -48,6 +65,11 @@
         try {
             const { username, password } = req.body
             const user = await User.findOne({ username})
+            if (typeof username != "string" || typeof password != "string"){
+                res.send("Invalid parameters!");
+                res.end();
+                return;
+               }
 
             if(!user) {
                 return res.json({
@@ -66,6 +88,7 @@
             const token = jwt.sign(
                 {
                     id: user._id,
+                    username: username
                 },
                 process.env.JWT_SECRET,
                 { expiresIn: '30d' },
@@ -80,12 +103,19 @@
         }catch(error){
             res.json({ message: "Error logging in!"})
         }
+        
     }
 
     // Get Me
     export const getMe = async (req, res) => {
         try {
-            const user = await User.findById(req.userId)
+            const user = await User.findById(req.userId).toArray((err, documents) => {
+        if (err) {
+            console.error('Error finding documents:', err);
+        } else {
+            console.log('Documents found:', documents);
+            }
+        });
 
             if(!user) {
                 return res.json({
@@ -109,3 +139,5 @@
             res.json({ message: "Not access."})
         }
     }
+
+    export default getMe;

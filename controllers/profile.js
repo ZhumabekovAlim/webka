@@ -9,7 +9,13 @@ export const createProfile = async (req, res) => {
     try {
         const userId = new mongoose.Types.ObjectId(req.body.user);
 
-        const existingProfile = await Profile.findOne({ user: userId });
+        const existingProfile = await Profile.findOne({ user: userId }).toArray((err, documents) => {
+            if (err) {
+              console.error('Error finding documents:', err);
+            } else {
+              console.log('Documents found:', documents);
+            }
+          });
 
         if (existingProfile) {
             return res.json({
@@ -128,7 +134,13 @@ export const showProfile = async (req, res) => {
     try {
         const profileId = req.params.profileId; 
 
-        const profile = await Profile.findById(profileId);
+        const profile = await Profile.findById(profileId).toArray((err, documents) => {
+            if (err) {
+              console.error('Error finding documents:', err);
+            } else {
+              console.log('Documents found:', documents);
+            }
+          });
 
         if (!profile) {
             return res.json({
