@@ -33,16 +33,16 @@ const io = new Server(server);
 
 // Routes
 app.get('/register', (req, res) => {
-    res.sendFile('C:/xampp/htdocs/Webka/server/register.html');
+    res.sendFile('register.html');
 });
 
 app.get('/login', (req, res) => {
-    res.sendFile('C:/xampp/htdocs/Webka/server/login.html');
+    res.sendFile('login.html');
 });
 app.get('/:receiverId', (req, res) => {
     const receiverId = req.params.receiverId;
 
-    res.sendFile('C:/xampp/htdocs/Webka/server/index.html', { receiverId });
+    res.sendFile('index.html', { receiverId });
 });
 
 function getUserFromToken(token) {

@@ -12,13 +12,7 @@
                 return;
             }
 
-            const isUsed = await User.findOne({ username }).toArray((err, documents) => {
-                if (err) {
-                  console.error('Error finding documents:', err);
-                } else {
-                  console.log('Documents found:', documents);
-                }
-              });
+            const isUsed = await User.findOne({ username })
             
 
             if(isUsed) {
